@@ -1,1 +1,0 @@
-export { onInteraction } from "./onInteraction";
