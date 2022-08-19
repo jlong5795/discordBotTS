@@ -7,6 +7,11 @@ require('dotenv').config();
 import { connectDatabase } from "./database/connectDatabase";
 import { validateEnv } from "./utils/validateEnv";
 
+// Validate environment variables
+if (!validateEnv()) {
+    throw new Error("Invalid environment variables");
+}
+
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 client.commands = new Collection();
 const commandsPath = path.join(__dirname, "commands");
@@ -17,11 +22,6 @@ for (const file of commandFiles) {
     const command = require(filePath);
     // set a new item in the collection with the key as the command name and the value as the exported module
     client.commands.set(command.data.name, command);
-}
-
-// Validate environment variables
-if (!validateEnv()) {
-    throw new Error("Invalid environment variables");
 }
 
 (async () => {
@@ -41,9 +41,7 @@ if (!validateEnv()) {
                 //TODO: Send to error log
                 await interaction.reply({ content: "An error occurred while attempting to execute this command", ephemeral: true });
             }
-
         })
-
 
         // Connects to MongoDB
         await connectDatabase();
